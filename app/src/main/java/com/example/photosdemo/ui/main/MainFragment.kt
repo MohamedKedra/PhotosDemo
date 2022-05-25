@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.example.photosdemo.R
 import com.example.photosdemo.app.DataState
 import com.example.photosdemo.app.Dependences
 import com.example.photosdemo.databinding.MainFragmentBinding
@@ -40,6 +41,11 @@ class MainFragment : Fragment() {
         with(binding) {
             photoAdapter = PhotoAdapter(requireContext())
             rvTeams.adapter = photoAdapter
+
+            btnRetry.setOnClickListener {
+                observeOnList()
+                hideOrDisplayLoading(isLoading = true)
+            }
         }
     }
 
@@ -54,13 +60,14 @@ class MainFragment : Fragment() {
                 DataState.DataStatus.SUCCESS -> {
                     hideOrDisplayLoading()
                     it?.getData()?.let { list ->
-                        if (list.isNotEmpty())
+                        if (list.isNotEmpty()) {
                             photoAdapter.setPhotosList(list = list as ArrayList<Photo>)
-                        else
-                            hideOrDisplayLoading(hasError = true, error = "Empty List")
+                            photoAdapter.notifyDataSetChanged()
+                        } else
+                            hideOrDisplayLoading(hasError = true, error = getString(R.string.empty))
 
                     } ?: kotlin.run {
-                        hideOrDisplayLoading(hasError = true, error = "Empty List")
+                        hideOrDisplayLoading(hasError = true, error = getString(R.string.empty))
                     }
                 }
                 DataState.DataStatus.ERROR -> {
@@ -68,7 +75,7 @@ class MainFragment : Fragment() {
 
                 }
                 DataState.DataStatus.NO_INTERNET -> {
-                    hideOrDisplayLoading(hasError = true, error = it.getError()?.message.toString())
+                    hideOrDisplayLoading(hasError = true, error = getString(R.string.noInternet))
                 }
             }
         }
@@ -81,7 +88,7 @@ class MainFragment : Fragment() {
     ) {
         with(binding) {
             pbProgressbar.isVisible = isLoading
-            tvError.isVisible = hasError
+            errorLayout.isVisible = hasError
             tvError.text = error
             rvTeams.isVisible = !(isLoading || hasError)
         }
