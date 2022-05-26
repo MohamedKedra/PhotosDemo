@@ -12,21 +12,20 @@ class Dependences {
     companion object {
 
         fun getViewModel(context: Context): MainViewModel {
-            return MainViewModel(getRepository(), getConnectivity(context))
+            return MainViewModel(getRepository(context), getConnectivity(context))
         }
 
-        private fun getRepository(): MainRepository {
-            return MainRepository(getService())
+        private fun getRepository(context: Context): MainRepository {
+            return MainRepository(getService(context))
         }
 
-        private fun getService(): NetworkService {
+        private fun getService(context: Context): NetworkService {
 
-            return NetworkApi.getClient().create(NetworkService::class.java)
+            return NetworkApi.getClient(context).create(NetworkService::class.java)
         }
 
-        private fun getConnectivity(context: Context): ConnectivityManager {
+        fun getConnectivity(context: Context): ConnectivityManager {
             return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         }
-
     }
 }

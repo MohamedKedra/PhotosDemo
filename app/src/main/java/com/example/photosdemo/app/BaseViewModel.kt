@@ -14,8 +14,9 @@ abstract class BaseViewModel(private val connectivityManager: ConnectivityManage
         call.enqueue(object : Callback<T> {
 
             override fun onResponse(call: Call<T>, response: Response<T>) {
+
                 response.body()?.let {
-                    publishResult(liveData, it)
+
                 } ?: run {
                     publishError(liveData, Throwable())
                 }
@@ -25,6 +26,10 @@ abstract class BaseViewModel(private val connectivityManager: ConnectivityManage
                 publishError(liveData, t)
             }
         })
+    }
+
+    fun isFromCached(raw: okhttp3.Response): Boolean {
+        return raw.cacheResponse != null
     }
 
     protected val isNetworkAvailable: Boolean

@@ -13,12 +13,12 @@ class MainViewModel(
 
     private var dataList = LiveDataState<List<Photo>>()
 
-    fun refreshMain(): LiveDataState<List<Photo>> {
+    fun refreshMain(isFirstTime: Boolean): LiveDataState<List<Photo>> {
 
-        if (!isNetworkAvailable) {
-            publishNoInternet(dataList)
-            return dataList
-        }
+//        if (!isNetworkAvailable && isFirstTime) {
+//            publishNoInternet(dataList)
+//            return dataList
+//        }
 
         publishLoading(dataList)
 
